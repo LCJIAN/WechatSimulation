@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.gson.Gson;
+import com.jaredrummler.apkparser.ApkParser;
 import com.lcjian.wechatsimulation.APP;
+import com.lcjian.wechatsimulation.Manager;
 import com.lcjian.wechatsimulation.SmackClient;
+import com.lcjian.wechatsimulation.entity.JobData;
 import com.lcjian.wechatsimulation.entity.Response;
 import com.lcjian.wechatsimulation.utils.DownloadUtils;
 import com.lcjian.wechatsimulation.utils.PackageUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -21,8 +25,8 @@ import rx.schedulers.Schedulers;
 
 public class UpdateSelfJob {
 
-    public void run(final SmackClient smackClient, String apkUrl) {
-        Observable.just(apkUrl)
+    public void run(final SmackClient smackClient, final JobData jobData) {
+        Observable.just(jobData.apkUrl)
                 .map(new Func1<String, File>() {
                     @Override
                     public File call(String s) {
@@ -35,7 +39,13 @@ public class UpdateSelfJob {
                     public void call(File file) {
                         if (file != null) {
                             restartProcess();
-                            PackageUtils.installSilent(APP.getInstance(), file.getAbsolutePath());
+                            ApkParser apkParser = ApkParser.create(file);
+                            try {
+                                Manager.setUpdateVersionCode(apkParser.getApkMeta().versionCode, new Gson().toJson(jobData));
+                                PackageUtils.installSilent(APP.getInstance(), file.getAbsolutePath());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         } else {
                             throw new RuntimeException("Download error");
                         }
@@ -43,7 +53,7 @@ public class UpdateSelfJob {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        smackClient.sendMessage(new Gson().toJson(new Response(2, throwable.getMessage(), null)));
+                        smackClient.sendMessage(new Gson().toJson(new Response(2, throwable.getMessage(), jobData)));
                     }
                 });
     }

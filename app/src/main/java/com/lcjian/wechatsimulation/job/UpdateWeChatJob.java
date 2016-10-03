@@ -3,6 +3,7 @@ package com.lcjian.wechatsimulation.job;
 import com.google.gson.Gson;
 import com.lcjian.wechatsimulation.APP;
 import com.lcjian.wechatsimulation.SmackClient;
+import com.lcjian.wechatsimulation.entity.JobData;
 import com.lcjian.wechatsimulation.entity.Response;
 import com.lcjian.wechatsimulation.utils.DownloadUtils;
 import com.lcjian.wechatsimulation.utils.FileUtils;
@@ -19,8 +20,8 @@ public class UpdateWeChatJob {
 
     private File mDestination = APP.getInstance().getExternalFilesDir("download");
 
-    public void run(final SmackClient smackClient, String apkUrl) {
-        Observable.just(apkUrl)
+    public void run(final SmackClient smackClient, final JobData jobData) {
+        Observable.just(jobData.apkUrl)
                 .map(new Func1<String, File>() {
                     @Override
                     public File call(String s) {
@@ -48,16 +49,16 @@ public class UpdateWeChatJob {
                     @Override
                     public void call(Boolean aBoolean) {
                         if (aBoolean) {
-                            smackClient.sendMessage(new Gson().toJson(new Response(0, "Job was finished", null)));
+                            smackClient.sendMessage(new Gson().toJson(new Response(0, "Job was finished", jobData)));
                         } else {
-                            smackClient.sendMessage(new Gson().toJson(new Response(2, "update WeChat failed", null)));
+                            smackClient.sendMessage(new Gson().toJson(new Response(2, "update WeChat failed", jobData)));
                         }
                         FileUtils.deleteDir(mDestination);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        smackClient.sendMessage(new Gson().toJson(new Response(2, throwable.getMessage(), null)));
+                        smackClient.sendMessage(new Gson().toJson(new Response(2, throwable.getMessage(), jobData)));
                         FileUtils.deleteDir(mDestination);
                     }
                 });

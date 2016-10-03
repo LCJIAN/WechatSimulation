@@ -29,3 +29,5 @@
 -keep class com.lcjian.wechatsimulation.entity.** { *; }
 -dontwarn rx.**
 -keep class rx.** { *; }
+-dontwarn com.jaredrummler.apkparser.**
+-keep class com.jaredrummler.apkparser.** { *; }

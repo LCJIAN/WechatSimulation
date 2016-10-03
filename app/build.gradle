@@ -14,7 +14,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("C:\\Users\\Administrator\\Desktop\\lcjian.keystore")
+            storeFile file("C:\\Users\\\\LCJIAN\\Desktop\\lcjian.keystore")
             storePassword "9a11b00c"
             keyAlias "liaocj"
             keyPassword "9a11b00c"
@@ -55,6 +55,7 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-android:latest.integration'
     compile 'org.igniterealtime.smack:smack-tcp:latest.integration'
     compile 'org.igniterealtime.smack:smack-extensions:latest.integration'
+    compile 'com.jaredrummler:apk-parser:latest.integration'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:latest.integration'
 }

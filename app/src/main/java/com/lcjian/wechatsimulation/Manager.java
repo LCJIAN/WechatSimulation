@@ -33,4 +33,20 @@ public class Manager {
         SIMULATION_DATABASE_PREFERENCES.edit().remove("current_web_content_height").apply();
         return height;
     }
+
+    public static void setUpdateVersionCode(Long versionCode, String jobData) {
+        SIMULATION_DATABASE_PREFERENCES.edit().putLong("version_code", versionCode).putString("job_data", jobData).apply();
+    }
+
+    public static void removeUpdateVersionCode() {
+        SIMULATION_DATABASE_PREFERENCES.edit().remove("version_code").remove("job_data").apply();
+    }
+
+    public static long getUpdateVersionCode() {
+        return SIMULATION_DATABASE_PREFERENCES.getLong("version_code", 0);
+    }
+
+    public static String getJobData() {
+        return SIMULATION_DATABASE_PREFERENCES.getString("job_data", "");
+    }
 }

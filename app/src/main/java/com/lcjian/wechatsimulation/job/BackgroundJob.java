@@ -21,9 +21,9 @@ public class BackgroundJob {
         }
         if (jobAndData != null) {
             if (TextUtils.equals("update_self", jobAndData.job)) {
-                new UpdateSelfJob().run(smackClient, jobAndData.data.apkUrl);
+                new UpdateSelfJob().run(smackClient, jobAndData.data);
             } else if (TextUtils.equals("update_we_chat", jobAndData.job)) {
-                new UpdateWeChatJob().run(smackClient, jobAndData.data.apkUrl);
+                new UpdateWeChatJob().run(smackClient, jobAndData.data);
             }
         }
     }

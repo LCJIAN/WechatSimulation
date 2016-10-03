@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -13,8 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
+import com.lcjian.wechatsimulation.Manager;
 import com.lcjian.wechatsimulation.R;
 import com.lcjian.wechatsimulation.SmackClient;
+import com.lcjian.wechatsimulation.entity.JobData;
+import com.lcjian.wechatsimulation.entity.Response;
 import com.lcjian.wechatsimulation.service.JobService;
 import com.lcjian.wechatsimulation.utils.ShellUtils;
 
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initUI(SmackClient smackClient) {
         et_account.setText(smackClient.getUsername());
         updateState(smackClient.getState());
+        checkUpdate(smackClient);
         smackClient.addStateChangeListener(new SmackClient.StateChangeListener() {
             @Override
             public void onStateChange(final SmackClient.State state) {
@@ -200,5 +207,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         btn_connect.setEnabled(aBoolean);
                     }
                 });
+    }
+
+    private void checkUpdate(SmackClient smackClient) {
+        if (smackClient.getState() == SmackClient.State.LOGIN_ED) {
+            if (Manager.getUpdateVersionCode() != 0) {
+                PackageManager manager = this.getPackageManager();
+                try {
+                    PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
+                    if (Manager.getUpdateVersionCode() == info.versionCode) {
+                        smackClient.sendMessage(new Gson().toJson(new Response(0, "Job was finished", new Gson().fromJson(Manager.getJobData(), JobData.class))));
+                    } else {
+                        smackClient.sendMessage(new Gson().toJson(new Response(2, "Update failed", new Gson().fromJson(Manager.getJobData(), JobData.class))));
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Manager.removeUpdateVersionCode();
+            }
+        }
     }
 }
