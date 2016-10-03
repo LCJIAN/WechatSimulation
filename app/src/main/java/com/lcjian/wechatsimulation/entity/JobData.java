@@ -62,4 +62,8 @@ public class JobData {
     public boolean containAd;
     @SerializedName("view_article_type")
     public int viewArticleType; // 1:view, 2:view and click ad, 3:view and click like, 4:view and click like and click ad
+
+    // 点击文章广告
+    @SerializedName("apk_url")
+    public String apkUrl;
 }

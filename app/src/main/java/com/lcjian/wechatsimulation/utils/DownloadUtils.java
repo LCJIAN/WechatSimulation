@@ -14,9 +14,9 @@ import timber.log.Timber;
 
 public class DownloadUtils {
 
-    public static boolean download(String url, File destination) {
+    public static File download(String url, File destination) {
         if (TextUtils.isEmpty(url)) {
-            return false;
+            return null;
         }
         Request request = new Request.Builder().url(url).build();
         Response response = null;
@@ -28,13 +28,13 @@ public class DownloadUtils {
                 sink = Okio.buffer(Okio.sink(file));
                 sink.writeAll(response.body().source());
                 sink.flush();
-                return true;
+                return file;
             } else {
-                return false;
+                return null;
             }
         } catch (IOException e) {
             Timber.e(e);
-            return false;
+            return null;
         } finally {
             try {
                 if (sink != null) {

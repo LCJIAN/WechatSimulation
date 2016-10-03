@@ -91,7 +91,7 @@ public class CreateMomentJob extends BaseJob {
                     public Observable<Boolean> call() {
                         boolean result = true;
                         for (String url : getJobData().momentPhotos) {
-                            result = result && DownloadUtils.download(url, mDestination);
+                            result = result && DownloadUtils.download(url, mDestination) != null;
                         }
                         return Observable.just(result);
                     }

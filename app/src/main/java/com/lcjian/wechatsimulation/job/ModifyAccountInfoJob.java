@@ -116,7 +116,7 @@ public class ModifyAccountInfoJob extends BaseJob {
             Observable.defer(new Func0<Observable<Boolean>>() {
                 @Override
                 public Observable<Boolean> call() {
-                    return Observable.just(DownloadUtils.download(getJobData().accountAvatar, mDestination));
+                    return Observable.just(DownloadUtils.download(getJobData().accountAvatar, mDestination) != null);
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

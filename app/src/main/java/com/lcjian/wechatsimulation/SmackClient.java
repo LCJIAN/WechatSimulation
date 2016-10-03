@@ -1,5 +1,6 @@
 package com.lcjian.wechatsimulation;
 
+import com.lcjian.wechatsimulation.job.BackgroundJob;
 import com.lcjian.wechatsimulation.job.Job;
 import com.lcjian.wechatsimulation.job.JobFactory;
 
@@ -117,6 +118,8 @@ public class SmackClient {
                                 } catch (InterruptedException e) {
                                     Timber.w(e.getMessage());
                                 }
+                            } else {
+                                BackgroundJob.run(SmackClient.this, message.getBody());
                             }
                         }
                     });
