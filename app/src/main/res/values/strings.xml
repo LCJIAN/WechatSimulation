@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Wechat Simulation</string>
+    <string name="simulation_service_label">Simulation Service</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="simulation_service_description">Simulation Description</string>
+</resources>
