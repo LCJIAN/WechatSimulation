@@ -58,7 +58,7 @@ public class SmackClient {
         mStateChangeListeners.remove(stateChangeListener);
     }
 
-    private final static String HOST = "114.215.140.3";
+    private final static String HOST = "114.215.140.123";
 
     private final static int PORT = 5222;
 
