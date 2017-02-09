@@ -7,6 +7,10 @@ import com.lcjian.wechatsimulation.entity.JobData;
 
 public interface Job {
 
+    String getComponentPackageName();
+
+    String getComponentClassName();
+
     void doWithEvent(AccessibilityService service, AccessibilityEvent event);
 
     void cancel();
@@ -21,7 +25,9 @@ public interface Job {
 
     boolean isError();
 
-    void setJobListener(JobListener listener);
+    void addJobListener(JobListener listener);
+
+    void removeJobListener(JobListener listener);
 
     interface JobListener {
 

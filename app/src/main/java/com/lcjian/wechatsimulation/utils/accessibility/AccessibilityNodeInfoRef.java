@@ -20,13 +20,13 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 
 /**
  * A class that simplifies traversal of node trees.
- *
+ * <p>
  * This class keeps track of an {@link AccessibilityNodeInfoCompat}
  * object and can traverse to other nodes in the tree, or be reset to
  * other nodes.  The node can be owned, in which case it will be
  * recycled when traversed away from or when a new node is assigned
  * to an object of this class.
- *
+ * <p>
  * Any node can be assigned to objects of this class, including nodes that
  * are not visible to the user.  The traversal methods, however, will only
  * traverse to visible nodes.
@@ -88,9 +88,9 @@ public class AccessibilityNodeInfoRef {
      * {@code node}.
      */
     public static AccessibilityNodeInfoRef obtain(
-        AccessibilityNodeInfoCompat node) {
+            AccessibilityNodeInfoCompat node) {
         return new AccessibilityNodeInfoRef(
-            AccessibilityNodeInfoCompat.obtain(node), true);
+                AccessibilityNodeInfoCompat.obtain(node), true);
     }
 
     /**
@@ -98,7 +98,7 @@ public class AccessibilityNodeInfoRef {
      * {@code node}.
      */
     public static AccessibilityNodeInfoRef unOwned(
-        AccessibilityNodeInfoCompat node) {
+            AccessibilityNodeInfoCompat node) {
         return node != null ? new AccessibilityNodeInfoRef(node, false) : null;
     }
 
@@ -106,7 +106,7 @@ public class AccessibilityNodeInfoRef {
      * Creates a new instance of this class taking ownership of {@code node}.
      */
     public static AccessibilityNodeInfoRef owned(
-        AccessibilityNodeInfoCompat node) {
+            AccessibilityNodeInfoCompat node) {
         return node != null ? new AccessibilityNodeInfoRef(node, true) : null;
     }
 
@@ -116,7 +116,7 @@ public class AccessibilityNodeInfoRef {
      * If {@code node} is {@code null}, {@code null} is returned.
      */
     public static AccessibilityNodeInfoRef refreshed(
-        AccessibilityNodeInfoCompat node) {
+            AccessibilityNodeInfoCompat node) {
         return owned(AccessibilityNodeInfoUtils.refreshNode(node));
     }
 
@@ -136,12 +136,12 @@ public class AccessibilityNodeInfoRef {
     }
 
     public static boolean isNull(
-        AccessibilityNodeInfoRef ref) {
+            AccessibilityNodeInfoRef ref) {
         return ref == null || ref.get() == null;
     }
 
     private AccessibilityNodeInfoRef(AccessibilityNodeInfoCompat node,
-            boolean owned) {
+                                     boolean owned) {
         mNode = node;
         mOwned = owned;
     }

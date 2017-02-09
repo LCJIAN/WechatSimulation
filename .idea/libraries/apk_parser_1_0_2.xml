@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="apk-parser-1.0.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.jaredrummler/apk-parser/1.0.2/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.jaredrummler/apk-parser/1.0.2/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jaredrummler/apk-parser/1.0.2/11e87af2fffdf3016f9b97f50b2f7d3ea910c680/apk-parser-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

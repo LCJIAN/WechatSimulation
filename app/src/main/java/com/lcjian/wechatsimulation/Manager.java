@@ -24,16 +24,6 @@ public class Manager {
         return SIMULATION_DATABASE_PREFERENCES.getStringSet("all_group_chat_member", new HashSet<String>()).contains(name);
     }
 
-    public static void setCurrentWebContentHeight(int height) {
-        SIMULATION_DATABASE_PREFERENCES.edit().putInt("current_web_content_height", height).apply();
-    }
-
-    public static int getCurrentWebContentHeight() {
-        int height = SIMULATION_DATABASE_PREFERENCES.getInt("current_web_content_height", 0);
-        SIMULATION_DATABASE_PREFERENCES.edit().remove("current_web_content_height").apply();
-        return height;
-    }
-
     public static void setUpdateVersionCode(Long versionCode, String jobData) {
         SIMULATION_DATABASE_PREFERENCES.edit().putLong("version_code", versionCode).putString("job_data", jobData).apply();
     }

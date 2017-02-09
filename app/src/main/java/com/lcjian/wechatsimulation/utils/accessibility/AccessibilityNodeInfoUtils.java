@@ -995,6 +995,13 @@ public class AccessibilityNodeInfoUtils {
         }
     };
 
+    public static final NodeFilter FILTER_CLICKABLE = new NodeFilter() {
+        @Override
+        public boolean accept(Context context, AccessibilityNodeInfoCompat node) {
+            return AccessibilityNodeInfoUtils.isClickable(node);
+        }
+    };
+
     private static final NodeFilter FILTER_ACCESSIBILITY_FOCUSABLE = new NodeFilter() {
         @Override
         public boolean accept(Context context, AccessibilityNodeInfoCompat node) {

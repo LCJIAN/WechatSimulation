@@ -25,9 +25,16 @@
 -keep class org.** { *; }
 -dontwarn timber.**
 -keep class timber.** { *; }
--dontwarn com.lcjian.wechatsimulation.entity.**
--keep class com.lcjian.wechatsimulation.entity.** { *; }
 -dontwarn rx.**
 -keep class rx.** { *; }
 -dontwarn com.jaredrummler.apkparser.**
 -keep class com.jaredrummler.apkparser.** { *; }
+-dontwarn com.lcjian.wechatsimulation.entity.**
+-keep class com.lcjian.wechatsimulation.entity.** { *; }
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

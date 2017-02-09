@@ -5,8 +5,10 @@ import com.lcjian.wechatsimulation.job.Job;
 import com.lcjian.wechatsimulation.job.JobFactory;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
@@ -35,9 +37,9 @@ import timber.log.Timber;
 public class SmackClient {
 
     public enum State {
-        CONNECTING, CONNECTED, CONNECT_FAILED, RECONNECTING, DISCONNECTING, DISCONNECTED,
+        DISCONNECTED, CONNECTING, CONNECTED, CONNECT_FAILED, RECONNECTING, DISCONNECTING,
         ACCOUNT_CREATING, ACCOUNT_CREATED, ACCOUNT_CREATE_FAILED,
-        LOGIN_ING, LOGIN_ED, LOGIN_FAILED
+        AUTHENTICATING, AUTHENTICATED, AUTHENTICATE_FAILED
     }
 
     public interface StateChangeListener {
@@ -79,14 +81,6 @@ public class SmackClient {
 
     private void connect() {
         try {
-//            Job job = new ViewArticleJob();
-//            JobData jobData = new JobData();
-//            jobData.contactNameForArticle = "小辉";
-//            jobData.articleUrl = "http://mp.weixin.qq.com/s?__biz=MjM5MTU3MzI3MA==&mid=2650511158&idx=5&sn=630a3e7e47adc586eb7216490520314d&scene=1&srcid=0903t4Y2UNYGckdamkeGmTqh&from=groupmessage&isappinstalled=0#wechat_redirect";
-//            jobData.containAd = true;
-//            jobData.viewArticleType = 4;
-//            job.setJobData(jobData);
-//            mJobsQueue.put(job);
             notifySateChange(State.CONNECTING);
             mXMPPTCPConnection = new XMPPTCPConnection(
                     XMPPTCPConnectionConfiguration.builder()
@@ -97,7 +91,42 @@ public class SmackClient {
                             .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
                             .setDebuggerEnabled(true)
                             .build());
+            mXMPPTCPConnection.addConnectionListener(new ConnectionListener() {
+                @Override
+                public void connected(XMPPConnection connection) {
+                    notifySateChange(State.CONNECTED);
+                }
 
+                @Override
+                public void authenticated(XMPPConnection connection, boolean resumed) {
+                    notifySateChange(State.AUTHENTICATED);
+                }
+
+                @Override
+                public void connectionClosed() {
+                    notifySateChange(State.DISCONNECTED);
+                }
+
+                @Override
+                public void connectionClosedOnError(Exception e) {
+                    notifySateChange(State.RECONNECTING);
+                }
+
+                @Override
+                public void reconnectionSuccessful() {
+                    notifySateChange(State.CONNECTED);
+                }
+
+                @Override
+                public void reconnectingIn(int seconds) {
+                    notifySateChange(State.RECONNECTING);
+                }
+
+                @Override
+                public void reconnectionFailed(Exception e) {
+                    notifySateChange(State.CONNECT_FAILED);
+                }
+            });
             ProviderManager.addExtensionProvider(DeliveryReceipt.ELEMENT, DeliveryReceipt.NAMESPACE, new DeliveryReceipt.Provider());
             ProviderManager.addExtensionProvider(DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE, new DeliveryReceiptRequest.Provider());
             DeliveryReceiptManager.getInstanceFor(mXMPPTCPConnection).setAutoReceiptMode(DeliveryReceiptManager.AutoReceiptMode.ifIsSubscribed);
@@ -125,7 +154,6 @@ public class SmackClient {
                     });
                 }
             });
-            notifySateChange(State.CONNECTED);
         } catch (InterruptedException | SmackException | IOException | XMPPException e) {
             notifySateChange(State.CONNECT_FAILED);
             Timber.e(e.getMessage());
@@ -156,14 +184,13 @@ public class SmackClient {
 
     private void login() {
         try {
-            notifySateChange(State.LOGIN_ING);
+            notifySateChange(State.AUTHENTICATING);
             mXMPPTCPConnection.login(mUsername, mPassword);
-            notifySateChange(State.LOGIN_ED);
         } catch (XMPPException
                 | SmackException
                 | InterruptedException
                 | IOException e) {
-            notifySateChange(State.LOGIN_FAILED);
+            notifySateChange(State.AUTHENTICATE_FAILED);
             Timber.e(e.getMessage());
         }
     }
@@ -171,17 +198,19 @@ public class SmackClient {
     private void disconnect() {
         notifySateChange(State.DISCONNECTING);
         mXMPPTCPConnection.disconnect();
-        notifySateChange(State.DISCONNECTED);
     }
 
     public void start() {
-        if (mXMPPTCPConnection == null || !mXMPPTCPConnection.isConnected()) {
+        if (getState() == State.DISCONNECTED
+                || getState() == State.CONNECT_FAILED) {
             connect();
         }
-        if (mXMPPTCPConnection != null && mXMPPTCPConnection.isConnected()) {
+        if (getState() == State.CONNECTED
+                || getState() == State.ACCOUNT_CREATE_FAILED) {
             createAccount();
         }
-        if (mXMPPTCPConnection != null && mState == State.ACCOUNT_CREATED && !mXMPPTCPConnection.isAuthenticated()) {
+        if (getState() == State.ACCOUNT_CREATED
+                || getState() == State.AUTHENTICATE_FAILED) {
             login();
         }
     }
@@ -190,7 +219,7 @@ public class SmackClient {
         disconnect();
     }
 
-    private void notifySateChange(State state) {
+    private synchronized void notifySateChange(State state) {
         mState = state;
         for (StateChangeListener stateChangeListener : mStateChangeListeners) {
             stateChangeListener.onStateChange(mState);
@@ -201,7 +230,7 @@ public class SmackClient {
         return mUsername;
     }
 
-    public State getState() {
+    public synchronized State getState() {
         return mState;
     }
 

@@ -122,13 +122,13 @@ public class WebInterfaceUtils {
      * {@link android.webkit.WebView} has the side effect of closing the IME
      * if currently displayed.
      *
-     * @param node The node containing web content with ChromeVox to which the
-     *            message should be sent
-     * @param direction {@link #DIRECTION_FORWARD} or
-     *            {@link #DIRECTION_BACKWARD}
+     * @param node        The node containing web content with ChromeVox to which the
+     *                    message should be sent
+     * @param direction   {@link #DIRECTION_FORWARD} or
+     *                    {@link #DIRECTION_BACKWARD}
      * @param htmlElement The HTML tag to send
      * @return {@code true} if the action was performed, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean performNavigationToHtmlElementAction(
             AccessibilityNodeInfoCompat node, int direction, String htmlElement) {
@@ -145,12 +145,12 @@ public class WebInterfaceUtils {
      * Sends an instruction to ChromeVox to navigate by DOM object in
      * the given direction within a node.
      *
-     * @param node The node containing web content with ChromeVox to which the
-     *            message should be sent
+     * @param node      The node containing web content with ChromeVox to which the
+     *                  message should be sent
      * @param direction {@link #DIRECTION_FORWARD} or
-     *            {@link #DIRECTION_BACKWARD}
+     *                  {@link #DIRECTION_BACKWARD}
      * @return {@code true} if the action was performed, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean performNavigationByDOMObject(
             AccessibilityNodeInfoCompat node, int direction) {
@@ -168,10 +168,10 @@ public class WebInterfaceUtils {
      * {@link android.webkit.WebView} has the side effect of closing the IME
      * if currently displayed.
      *
-     * @param node The node containing web content with ChromeVox to which the
-     *            message should be sent
-     * @param direction {@link #DIRECTION_FORWARD} or
-     *            {@link #DIRECTION_BACKWARD}
+     * @param node        The node containing web content with ChromeVox to which the
+     *                    message should be sent
+     * @param direction   {@link #DIRECTION_FORWARD} or
+     *                    {@link #DIRECTION_BACKWARD}
      * @param granularity The granularity with which to move or a special case argument.
      * @return {@code true} if the action was performed, {@code false} otherwise.
      */
@@ -194,12 +194,12 @@ public class WebInterfaceUtils {
      * {@link android.webkit.WebView} has the side effect of closing the IME if
      * currently displayed.
      *
-     * @param node The node containing web content with ChromeVox to which the
-     *            message should be sent
+     * @param node   The node containing web content with ChromeVox to which the
+     *               message should be sent
      * @param action The ACTION constant in this class match the special action
-     *            that ChromeVox should perform.
+     *               that ChromeVox should perform.
      * @return {@code true} if the action was performed, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean performSpecialAction(AccessibilityNodeInfoCompat node, int action) {
         return performSpecialAction(node, action, DIRECTION_FORWARD);
@@ -213,14 +213,14 @@ public class WebInterfaceUtils {
      * {@link android.webkit.WebView} has the side effect of closing the IME if
      * currently displayed.
      *
-     * @param node The node containing web content with ChromeVox to which the
-     *            message should be sent
-     * @param action The ACTION constant in this class match the special action
-     *            that ChromeVox should perform.
+     * @param node      The node containing web content with ChromeVox to which the
+     *                  message should be sent
+     * @param action    The ACTION constant in this class match the special action
+     *                  that ChromeVox should perform.
      * @param direction The DIRECTION constant in this class to add as an extra
-     *            argument to the special action.
+     *                  argument to the special action.
      * @return {@code true} if the action was performed, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean performSpecialAction(
             AccessibilityNodeInfoCompat node, int action, int direction) {
@@ -243,10 +243,10 @@ public class WebInterfaceUtils {
      * NOTE: further navigation should occur at the default movement
      * granularity.
      *
-     * @param node The node representing the web content
+     * @param node    The node representing the web content
      * @param enabled Whether this mode should be entered or exited
      * @return {@code true} if the action was performed, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public static boolean setSpecialContentModeEnabled(
             AccessibilityNodeInfoCompat node, boolean enabled) {
@@ -335,7 +335,7 @@ public class WebInterfaceUtils {
 
     /**
      * @return {@code true} if the user has explicitly enabled injection of
-     *         accessibility scripts into web content.
+     * accessibility scripts into web content.
      */
     public static boolean isScriptInjectionEnabled(Context context) {
         final int injectionSetting = Settings.Secure.getInt(
@@ -348,7 +348,7 @@ public class WebInterfaceUtils {
      * web content.
      *
      * @param context The parent context.
-     * @param node The node to check for web content.
+     * @param node    The node to check for web content.
      * @return Whether the given node has navigable web content.
      */
     public static boolean hasNavigableWebContent(

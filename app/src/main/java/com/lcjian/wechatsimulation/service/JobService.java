@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -18,15 +17,12 @@ import com.lcjian.wechatsimulation.R;
 import com.lcjian.wechatsimulation.RxBus;
 import com.lcjian.wechatsimulation.SmackClient;
 import com.lcjian.wechatsimulation.entity.Response;
-import com.lcjian.wechatsimulation.job.AddFriendBySearchMobileJob;
-import com.lcjian.wechatsimulation.job.CreateGroupChatJob;
-import com.lcjian.wechatsimulation.job.CreateMomentJob;
-import com.lcjian.wechatsimulation.job.GetRoomQrCodeJob;
 import com.lcjian.wechatsimulation.job.Job;
-import com.lcjian.wechatsimulation.job.ModifyAccountInfoJob;
+import com.lcjian.wechatsimulation.job.foreground.AddFriendBySearchMobileJob;
+import com.lcjian.wechatsimulation.job.foreground.CreateGroupChatJob;
+import com.lcjian.wechatsimulation.job.foreground.GetRoomQrCodeJob;
 import com.lcjian.wechatsimulation.utils.FileUtils;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -107,7 +103,7 @@ public class JobService extends Service {
                 public void onStateChange(SmackClient.State state) {
                     if (state == SmackClient.State.CONNECT_FAILED
                             || state == SmackClient.State.ACCOUNT_CREATE_FAILED
-                            || state == SmackClient.State.LOGIN_FAILED) {
+                            || state == SmackClient.State.AUTHENTICATE_FAILED) {
                         startService(new Intent(JobService.this, JobService.class).putExtra("stop", true));
                     }
                 }
@@ -125,7 +121,7 @@ public class JobService extends Service {
                                 break;
                             }
                             if (mCurrentJob != null && !mCurrentJob.isFinished() && !mCurrentJob.isCancelled() && !mCurrentJob.isError()) {
-                                Thread.sleep(1000 * 60);
+                                Thread.sleep(1000 * 10);
                                 continue;
                             }
                             mCurrentJob = mJobsQueue.take();
@@ -144,27 +140,15 @@ public class JobService extends Service {
                                     currentJob.cancel();
                                 }
                             });
-                            currentJob.setJobListener(new Job.JobListener() {
+                            currentJob.addJobListener(new Job.JobListener() {
                                 @Override
                                 public void onCancelled() {
-                                    if (currentJob instanceof ModifyAccountInfoJob
-                                            || currentJob instanceof CreateMomentJob) {
-                                        File destination = getExternalFilesDir("download");
-                                        FileUtils.deleteDir(destination);
-                                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destination)));
-                                    }
                                     mSmackClient.sendMessage(new Gson().toJson(new Response(1, "Job was cancelled", currentJob.getJobData())));
                                     Timber.d("onCancelled");
                                 }
 
                                 @Override
                                 public void onFinished() {
-                                    if (currentJob instanceof ModifyAccountInfoJob
-                                            || currentJob instanceof CreateMomentJob) {
-                                        File destination = getExternalFilesDir("download");
-                                        FileUtils.deleteDir(destination);
-                                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destination)));
-                                    }
                                     if (currentJob instanceof GetRoomQrCodeJob) {
                                         currentJob.getJobData().roomNameQrImgStr = FileUtils.firstFileToBase64(currentJob.getJobData().roomNameQrLocalDirectory);
                                         FileUtils.deleteDir(currentJob.getJobData().roomNameQrLocalDirectory);
@@ -175,12 +159,6 @@ public class JobService extends Service {
 
                                 @Override
                                 public void onError(Throwable t) {
-                                    if (currentJob instanceof ModifyAccountInfoJob
-                                            || currentJob instanceof CreateMomentJob) {
-                                        File destination = getExternalFilesDir("download");
-                                        FileUtils.deleteDir(destination);
-                                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + destination)));
-                                    }
                                     mSmackClient.sendMessage(new Gson().toJson(new Response(2, t.getMessage(), currentJob.getJobData())));
                                     Timber.e(t, t.getMessage());
                                     Timber.d("onError:%s", t.getMessage());
@@ -198,7 +176,7 @@ public class JobService extends Service {
                                                     new Intent().setAction(Intent.ACTION_MAIN)
                                                             .addCategory(Intent.CATEGORY_HOME)
                                                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                                                            .setClassName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI"), PendingIntent.FLAG_ONE_SHOT))
+                                                            .setClassName(currentJob.getComponentPackageName(), currentJob.getComponentClassName()), PendingIntent.FLAG_ONE_SHOT))
                                             .setTicker(String.format(Locale.getDefault(), "%s:%s", Constants.JOB, currentJob.getClass().getSimpleName()))
                                             .setAutoCancel(true)
                                             .build());

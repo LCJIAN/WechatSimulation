@@ -15,6 +15,7 @@ public class APP extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+        Timber.plant(new ErrorTree());
     }
 
     public static APP getInstance() {

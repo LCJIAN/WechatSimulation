@@ -11,7 +11,6 @@ import android.view.accessibility.AccessibilityEvent;
 import com.lcjian.wechatsimulation.Constants;
 import com.lcjian.wechatsimulation.RxBus;
 import com.lcjian.wechatsimulation.job.Job;
-import com.lcjian.wechatsimulation.utils.AccessibilityHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +29,8 @@ public class SimulationService extends AccessibilityService {
 
     private Subscription mSubscription;
 
+    private static SimulationService service;
+
     @Override
     public void onCreate() {
         Timber.d("onCreate");
@@ -45,6 +46,7 @@ public class SimulationService extends AccessibilityService {
         }));
         mSubscriptions.add(eventEmitter.connect());
         super.onCreate();
+        service = this;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class SimulationService extends AccessibilityService {
             if (data != null && data instanceof Notification) {
                 final CharSequence tickerText = ((Notification) data).tickerText;
                 if (!TextUtils.isEmpty(tickerText) && tickerText.toString().contains(Constants.JOB)) {
-                    AccessibilityHelper.performHome(this);
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
                     if (mSubscription != null) {
                         mSubscription.unsubscribe();
                     }
@@ -90,6 +92,7 @@ public class SimulationService extends AccessibilityService {
     @Override
     public void onDestroy() {
         Timber.d("onDestroy");
+        service = null;
         if (mSubscriptions != null) {
             mSubscriptions.unsubscribe();
         }
@@ -99,4 +102,7 @@ public class SimulationService extends AccessibilityService {
         super.onDestroy();
     }
 
+    public static boolean isRunning() {
+        return service != null;
+    }
 }

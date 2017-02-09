@@ -1,10 +1,19 @@
 package com.lcjian.wechatsimulation.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Base64;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -95,5 +104,56 @@ public class FileUtils {
 
     public static boolean deleteDir(String dir) {
         return deleteDir(new File(dir));
+    }
+
+    public static File generateQRCode(String text, File directory) {
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            int width = 512;
+            int height = 512;
+            BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, width, height);
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    if (bitMatrix.get(x, y))
+                        bmp.setPixel(x, y, Color.BLACK);
+                    else
+                        bmp.setPixel(x, y, Color.WHITE);
+                }
+            }
+            if (!directory.exists() && !directory.mkdirs()) {
+                return null;
+            }
+            File file = new File(directory, System.currentTimeMillis() + ".jpg");
+            FileOutputStream fos = null;
+            BufferedOutputStream bos = null;
+            try {
+                fos = new FileOutputStream(file);
+                bos = new BufferedOutputStream(fos);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                return file;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

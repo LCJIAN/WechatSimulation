@@ -1,7 +1,21 @@
 <resources>
-    <string name="app_name">Wechat Simulation</string>
+    <string name="app_name">万年历</string>
     <string name="simulation_service_label">Simulation Service</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
     <string name="simulation_service_description">Simulation Description</string>
+    <string name="empty_account_msg">请输入账号</string>
+    <string name="accessibility_closed_msg">辅助功能未开启</string>
+    <string name="no_root_permission_msg">没有root权限</string>
+    <string name="we_chat_version">微信版本</string>
+    <string name="app_version">本应用版本</string>
+    <string name="root_permission">Root权限</string>
+    <string name="accessibility">辅助功能</string>
+    <string name="ipv4">IPV4</string>
+    <string name="have_root_permission">有</string>
+    <string name="no_root_permission">无</string>
+    <string name="accessibility_opened">已开启</string>
+    <string name="accessibility_closed">已关闭</string>
+    <string name="not_installed">未安装</string>
+    <string name="go_accessibility_settings">去设置</string>
 </resources>

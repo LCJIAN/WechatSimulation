@@ -118,13 +118,13 @@ public class ClassLoadingManager {
      * package name is null and an attempt for loading of a package context is
      * required the it is extracted from the class name.
      *
-     * @param context The context from which to first try loading the class.
-     * @param className The name of the class to load.
+     * @param context     The context from which to first try loading the class.
+     * @param className   The name of the class to load.
      * @param packageName The name of the package to which the class belongs.
      * @return The class if loaded successfully, null otherwise.
      */
     public Class<?> loadOrGetCachedClass(Context context, CharSequence className,
-            CharSequence packageName) {
+                                         CharSequence packageName) {
         if (TextUtils.isEmpty(className)) {
             LogUtils.log(this, Log.DEBUG, "Missing class name. Failed to load class.");
             return null;
@@ -212,7 +212,7 @@ public class ClassLoadingManager {
      * </p>
      */
     public boolean checkInstanceOf(Context context, CharSequence targetClassName,
-            CharSequence loaderPackage, CharSequence referenceClassName) {
+                                   CharSequence loaderPackage, CharSequence referenceClassName) {
         if ((targetClassName == null) || (referenceClassName == null)) {
             return false;
         }
@@ -239,7 +239,7 @@ public class ClassLoadingManager {
      * </p>
      */
     public boolean checkInstanceOf(Context context, CharSequence targetClassName,
-            CharSequence loaderPackage, Class<?> referenceClass) {
+                                   CharSequence loaderPackage, Class<?> referenceClass) {
         if ((targetClassName == null) || (referenceClass == null)) {
             return false;
         }

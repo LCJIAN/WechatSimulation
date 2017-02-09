@@ -6,7 +6,7 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/simulation_service_description"
     android:notificationTimeout="100"
-    android:packageNames="com.lcjian.wechatsimulation, com.tencent.mm"
+    android:packageNames="com.youloft.calendar, com.tencent.mm, com.oppo.market"
     android:settingsActivity="com.lcjian.wechatsimulation.ServiceSettingsActivity">
 
 </accessibility-service>

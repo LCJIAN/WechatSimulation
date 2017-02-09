@@ -5,16 +5,16 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.lcjian.wechatsimulation"
+        applicationId "com.youloft.calendar"
         minSdkVersion 18
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 22
+        versionCode 12
+        versionName "1.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         release {
-            storeFile file("C:\\Users\\\\LCJIAN\\Desktop\\lcjian.keystore")
+            storeFile file("C:\\Users\\Administrator\\Desktop\\lcjian.keystore")
             storePassword "9a11b00c"
             keyAlias "liaocj"
             keyPassword "9a11b00c"
@@ -40,7 +40,9 @@ configurations {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    provided 'de.robv.android.xposed:api:latest.integration'
+    provided 'de.robv.android.xposed:api:latest.integration:sources'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -52,10 +54,15 @@ dependencies {
     compile 'com.jakewharton.timber:timber:latest.integration'
     compile 'com.google.code.gson:gson:latest.integration'
     compile 'com.jakewharton:butterknife:latest.integration'
-    compile 'org.igniterealtime.smack:smack-android:latest.integration'
-    compile 'org.igniterealtime.smack:smack-tcp:latest.integration'
-    compile 'org.igniterealtime.smack:smack-extensions:latest.integration'
+    compile 'org.igniterealtime.smack:smack-android:4.2.0-beta2'
+    compile 'org.igniterealtime.smack:smack-tcp:4.2.0-beta2'
+    compile 'org.igniterealtime.smack:smack-extensions:4.2.0-beta2'
     compile 'com.jaredrummler:apk-parser:latest.integration'
+    compile 'com.github.nisrulz:easydeviceinfo-base:latest.integration'
+    compile 'com.google.zxing:core:latest.integration'
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'org.apache.commons:commons-lang3:latest.integration'
+    //    compile 'com.rmtheis:tess-two:latest.integration'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:latest.integration'
 }
